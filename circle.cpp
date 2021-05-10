@@ -1,14 +1,15 @@
  
 #define GLUT_DISABLE_ATEXIT_HACK
 #include<windows.h>
-//#include<gl/gl.h> 
-#include"glut.h"
+#include<gl/gl.h>
+#include<gl/glut.h>
 #include<iostream>
 #include<cmath>
-#include<cmath>
+#include<math.h>
 
 using namespace std;
-
+///åˆå§‹åŒ–å‡½æ•°
+///////////////////////////////////////////////////////////////
 void init(void)
 {
     glClearColor(1.0, 1.0, 1.0, 0.0);  // Set display-window color to white.
@@ -16,199 +17,20 @@ void init(void)
     gluOrtho2D(0.0, 200.0, 0.0, 150.0);
 }
 
-/*
-    ÊýÖµÎ¢·Ö·½·¨»­Ïß
-*/
-void LineDDA(int x1, int y1, int x2, int y2)
-{
-    glColor3f(1.0, 0.0, 0.0);       // ºìÉ«
-    glPointSize(2.0f);
-
-    /*
-        Á½µãÖØºÏÉÐÎ´ÅÐ¶Ï
-    */
-
-    int dm = 0;
-    if (abs(x2 - x1) >= abs(y2 - y1))
-    {
-        dm = abs(x2 - x1);              // x Îª¼Æ³¤·½Ïò
-    }
-    else
-    {
-        dm = abs(y2 - y1);              // y Îª¼Æ³¤·½Ïò
-    }
-    float dx = (float)(x2 - x1) / dm;   // µ± x Îª¼Æ³¤·½Ïò£¬dx = 1
-    float dy = (float)(y2 - y1) / dm;   // µ± y Îª¼Æ³¤·½Ïò£¬dy = 1
-    float x = x1;
-    float y = y1;
-
-    for (int i = 0; i < dm; ++i)
-    {
-        glBegin(GL_POINTS);
-        glVertex2f((int)x, (int)y);
-        glEnd();
-        glFlush();
-        x += dx;
-        y += dy;
-    }
-}
-
-/*
-    ½»»»Á½¸öint ÀàÐÍµÄ±äÁ¿µÄÖµ
-*/
-void swap_value(int* a, int* b)
-{
-    int tmp = *a;
-    *a = *b;
-    *b = tmp;
-}
-
-/*
-    Bresenham »­Ïß·¨
-*/
-void LineBres(int x1, int y1, int x2, int y2)
-{
-    glColor3f(0.0, 0.0, 1.0);       // À¶É«
-    glPointSize(2.0f);
-
-    int dx = abs(x2 - x1);
-    int dy = abs(y2 - y1);
-    // Á½µãÖØºÏ
-    if (dx == 0 && dy == 0)
-    {
-        glBegin(GL_POINTS);
-            glVertex2f(x1, y1);
-        glEnd();
-        glFlush();
-        return ;
-    }
-
-    int flag = 0;       // ½«Ð±ÂÊ±ä»»µ½ 0 <= |k| <= 1 Çø¼ä
-    if (dx < dy)
-    {
-        flag = 1;
-        swap_value(&x1, &y1);
-        swap_value(&x2, &y2);
-        swap_value(&dx, &dy);
-    }
-
-    int tx = (x2 - x1) > 0 ? 1 : -1;
-    int ty = (y2 - y1) > 0 ? 1 : -1;
-    int curx = x1;
-    int cury = y1;
-    int dS = 2 * dy;
-    int dT = 2 * (dy - dx);
-    int d = dS - dx;
-    while (curx != x2)
-    {
-        if (d < 0)
-            d += dS;
-        else
-        {
-            cury += ty;
-            d += dT;
-        }
-
-        if (flag)
-        {
-            glBegin(GL_POINTS);
-                glVertex2f(cury, curx);
-            glEnd();
-            glFlush();
-        }
-        else
-        {
-            glBegin(GL_POINTS);
-                glVertex2f(curx, cury);
-            glEnd();
-            glFlush();
-        }
-        curx += tx;
-    }
-
-}
-void drawpoint(int x, int y)
-{
-    glBegin(GL_POINTS);
-    glVertex2f(x, y);
-    glEnd();
-    glFlush();
-}
-
-void Midpoint(int x0, int y0, int x1, int y1)
-{
-    glColor3f(0.0, 1.0, 0.0);       // À¶É«
-    glPointSize(2.0f);
-    int a,b,d1,d2,d,_x,_y;
-    a = y0-y1, b = x1-x0, d=2*a+b;
-    d1= 2*a,d2=2*(a+b);
-    _x=x0,_y=y0;
-    drawpoint(_x,_y);
-
-    while(_x<x1)
-    {
-        if(d<0){
-            _x++, _y++, d+=d2;
-        }else{
-            _x++,d+=d1;
-        }
-        drawpoint(_x,_y);
-    }
-
-}
-
-//½è¼ø
-void MidPointLine(int x1,int y1,int x2,int y2)
-{
-	int a,b,dt1,dt2,d,x,y;
-	a = y1 - y2;
-	b = x2 - x1;
-	d = a + a + b;	//ÎªÁË±ÜÃâÐ¡Êý£¬ÕâÀïÈ¡2±¶
-	dt1 = a + b + a +b;
-	dt2 = a + a;
-	x = x1;
-	y = y1;
- 
-	glColor3f(0.0,1.0,0.0);
-	glPointSize(2.0f);
-	glBegin(GL_POINTS);
-	glVertex2i(x,y);
-	glEnd();
-	while(x < x2)
-	{
-		if(d < 0)
-		{
-			x++;
-			y++;
-			d += dt1;
-		}
-		else
-		{
-			x++;
-			d += dt2;
-		}
-		glBegin(GL_POINTS);
-		glVertex2i(x,y);
-		glEnd();
-		   glFlush();
-	}
- 
-} 
-
-// ´°¿Ú´óÐ¡¸Ä±äÊ±µ÷ÓÃµÄµÇ¼Çº¯Êý
+// çª—å£å¤§å°æ”¹å˜æ—¶è°ƒç”¨çš„ç™»è®°å‡½æ•°
 void ChangeSize(GLsizei w, GLsizei h)
 {
 
     if (h == 0)     h = 1;
 
-    // ÉèÖÃÊÓÇø³ß´ç
+    // è®¾ç½®è§†åŒºå°ºå¯¸
     glViewport(0, 0, w, h);
 
-    // ÖØÖÃ×ø±êÏµÍ³
+    // é‡ç½®åæ ‡ç³»ç»Ÿ
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    // ½¨Á¢ÐÞ¼ô¿Õ¼äµÄ·¶Î§
+    // å»ºç«‹ä¿®å‰ªç©ºé—´çš„èŒƒå›´
     if (w <= h)
         glOrtho(0.0f, 250.0f, 0.0f, 250.0f*h / w, 1.0, -1.0);
     else
@@ -216,7 +38,7 @@ void ChangeSize(GLsizei w, GLsizei h)
 
 }
 ///////////////////////////////////////////////////////////////////
-//Ô²µÄÉú³ÉËã·¨ 
+//åœ†çš„ç”Ÿæˆç®—æ³• 
 void f(int x, int y, int r)
 {
 	int tx = x, ty = y;
@@ -268,7 +90,7 @@ void Circle_Bresenham(int x, int y, int r)
 	glPointSize(2.0f);
 	while (tx <= ty)
 	{
-		// ÀûÓÃÔ²µÄ°Ë·Ö¶Ô³ÆÐÔ»­µã
+		// åˆ©ç”¨åœ†çš„å…«åˆ†å¯¹ç§°æ€§ç”»ç‚¹
 		putpixel(x + tx, y + ty);
 		putpixel(x + tx, y - ty);
 		putpixel(x - tx, y + ty);
@@ -278,9 +100,9 @@ void Circle_Bresenham(int x, int y, int r)
 		putpixel(x - ty, y + tx);
 		putpixel(x - ty, y - tx);
  
-		if (d < 0)		// È¡ÉÏÃæµÄµã
+		if (d < 0)		// å–ä¸Šé¢çš„ç‚¹
 			d += 4 * tx + 6;
-		else			// È¡ÏÂÃæµÄµã
+		else			// å–ä¸‹é¢çš„ç‚¹
 			d += 4 * (tx - ty) + 10, ty--;
  
 		tx++;
@@ -288,7 +110,7 @@ void Circle_Bresenham(int x, int y, int r)
 }
 
 
-//////////////////////////////////ÖÐµã»­Ô²·¨//////////////////////////////////
+//////////////////////////////////ä¸­ç‚¹ç”»åœ†æ³•//////////////////////////////////
 void drawPixel(int x, int y)
 {
 	glBegin(GL_POINTS);
@@ -328,20 +150,31 @@ void drawCircle(int xc,int yc,int r)
         drawEightPoints(xc, yc, addx, addy);
     }
 }
+////////////////////////////////å¼€æ–¹ç®—æ³•ï¼ˆå‹¾è‚¡ç®—æ³•ï¼‰//////////////////////////
+void circleSqr(int xc, int yc, int r)
+{
+    int start = xc - r;
+    int end = xc + r;
+    for (int i = start; i <= end; i++){
+        int p = sqrt(float(r*r - pow(xc-i,2)));
+        drawPixel(i,yc+p);
+        drawPixel(i,yc-p);
+    }
+}
 //////////////////////////////////////////////////////////////////////////
 /*
 
 */
 void display(void)
 {
-    // ÓÃµ±Ç°±³¾°É«Ìî³ä´°¿Ú£¬Èç¹û²»Ð´Õâ¾ä»á²ÐÁôÖ®Ç°µÄÍ¼Ïñ
+    // ç”¨å½“å‰èƒŒæ™¯è‰²å¡«å……çª—å£ï¼Œå¦‚æžœä¸å†™è¿™å¥ä¼šæ®‹ç•™ä¹‹å‰çš„å›¾åƒ
     glClear(GL_COLOR_BUFFER_BIT);
 
 
-	//ÖÐµã»­Ô²
- 	drawCircle(60,60,30); 
+	//ä¸­ç‚¹ç”»åœ†
+ 	drawCircle(60,60,30);
  	Circle_Bresenham(100,100,30);
-
+    circleSqr(130,130,30);
 }
 
 int main(int argc, char* argv[])
