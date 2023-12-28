@@ -1,15 +1,5 @@
- 
-#define GLUT_DISABLE_ATEXIT_HACK
-#include<windows.h>
-#include<gl/gl.h>
-#include<gl/glut.h>
-#include<iostream>
-#include<cmath>
-#include<math.h>
+#include "func.h"
 
-using namespace std;
-///åˆå§‹åŒ–å‡½æ•°
-///////////////////////////////////////////////////////////////
 void init(void)
 {
     glClearColor(1.0, 1.0, 1.0, 0.0);  // Set display-window color to white.
@@ -17,20 +7,20 @@ void init(void)
     gluOrtho2D(0.0, 200.0, 0.0, 150.0);
 }
 
-// çª—å£å¤§å°æ”¹å˜æ—¶è°ƒç”¨çš„ç™»è®°å‡½æ•°
+// ´°¿Ú´óĞ¡¸Ä±äÊ±µ÷ÓÃµÄµÇ¼Çº¯Êı
 void ChangeSize(GLsizei w, GLsizei h)
 {
 
     if (h == 0)     h = 1;
 
-    // è®¾ç½®è§†åŒºå°ºå¯¸
+    // ÉèÖÃÊÓÇø³ß´ç
     glViewport(0, 0, w, h);
 
-    // é‡ç½®åæ ‡ç³»ç»Ÿ
+    // ÖØÖÃ×ø±êÏµÍ³
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    // å»ºç«‹ä¿®å‰ªç©ºé—´çš„èŒƒå›´
+    // ½¨Á¢ĞŞ¼ô¿Õ¼äµÄ·¶Î§
     if (w <= h)
         glOrtho(0.0f, 250.0f, 0.0f, 250.0f*h / w, 1.0, -1.0);
     else
@@ -38,7 +28,7 @@ void ChangeSize(GLsizei w, GLsizei h)
 
 }
 ///////////////////////////////////////////////////////////////////
-//åœ†çš„ç”Ÿæˆç®—æ³• 
+//Ô²µÄÉú³ÉËã·¨ 
 void f(int x, int y, int r)
 {
 	int tx = x, ty = y;
@@ -90,7 +80,7 @@ void Circle_Bresenham(int x, int y, int r)
 	glPointSize(2.0f);
 	while (tx <= ty)
 	{
-		// åˆ©ç”¨åœ†çš„å…«åˆ†å¯¹ç§°æ€§ç”»ç‚¹
+		// ÀûÓÃÔ²µÄ°Ë·Ö¶Ô³ÆĞÔ»­µã
 		putpixel(x + tx, y + ty);
 		putpixel(x + tx, y - ty);
 		putpixel(x - tx, y + ty);
@@ -100,9 +90,9 @@ void Circle_Bresenham(int x, int y, int r)
 		putpixel(x - ty, y + tx);
 		putpixel(x - ty, y - tx);
  
-		if (d < 0)		// å–ä¸Šé¢çš„ç‚¹
+		if (d < 0)		// È¡ÉÏÃæµÄµã
 			d += 4 * tx + 6;
-		else			// å–ä¸‹é¢çš„ç‚¹
+		else			// È¡ÏÂÃæµÄµã
 			d += 4 * (tx - ty) + 10, ty--;
  
 		tx++;
@@ -110,7 +100,7 @@ void Circle_Bresenham(int x, int y, int r)
 }
 
 
-//////////////////////////////////ä¸­ç‚¹ç”»åœ†æ³•//////////////////////////////////
+//////////////////////////////////ÖĞµã»­Ô²·¨//////////////////////////////////
 void drawPixel(int x, int y)
 {
 	glBegin(GL_POINTS);
@@ -150,7 +140,7 @@ void drawCircle(int xc,int yc,int r)
         drawEightPoints(xc, yc, addx, addy);
     }
 }
-////////////////////////////////å¼€æ–¹ç®—æ³•ï¼ˆå‹¾è‚¡ç®—æ³•ï¼‰//////////////////////////
+////////////////////////////////¿ª·½Ëã·¨£¨¹´¹ÉËã·¨£©//////////////////////////
 void circleSqr(int xc, int yc, int r)
 {
     int start = xc - r;
@@ -167,17 +157,18 @@ void circleSqr(int xc, int yc, int r)
 */
 void display(void)
 {
-    // ç”¨å½“å‰èƒŒæ™¯è‰²å¡«å……çª—å£ï¼Œå¦‚æœä¸å†™è¿™å¥ä¼šæ®‹ç•™ä¹‹å‰çš„å›¾åƒ
+    // ÓÃµ±Ç°±³¾°É«Ìî³ä´°¿Ú£¬Èç¹û²»Ğ´Õâ¾ä»á²ĞÁôÖ®Ç°µÄÍ¼Ïñ
     glClear(GL_COLOR_BUFFER_BIT);
 
 
-	//ä¸­ç‚¹ç”»åœ†
+	//ÖĞµã»­Ô²
  	drawCircle(60,60,30);
  	Circle_Bresenham(100,100,30);
     circleSqr(130,130,30);
 }
 
-int main(int argc, char* argv[])
+
+void displayCircle(int argc, char* argv[])
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
@@ -188,7 +179,6 @@ int main(int argc, char* argv[])
     glutReshapeFunc(ChangeSize);
     init();
     glutMainLoop();
-    return 0;
+
 }
 
- 
